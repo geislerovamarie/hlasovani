@@ -4,9 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #poll {
+            border-collapse: collapse;
+            max-width: 100%;
+            white-space: nowrap;
+        }
+
+        #poll td, #poll th {
+            border: 1px solid #f2f2f2;
+            padding: 8px;
+        }
+
+        #poll th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #004479;
+            color: white;
+        }
+
+        table tr:last-child {
+            background-color: #eeecec;
+        }
+    </style>
 </head>
 <body>
     <h1><%= title %></h1>
+
+    <div id="newPoll">
+        <button name="addPoll" type="button">Vytvořit nové hlasování</button> 
+    </div>
+    <br>
+
+    <div id="pollsList">
+        <%- include("_polls") %>
+    </div>
     
 </body>
 </html>
