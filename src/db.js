@@ -35,3 +35,18 @@ export const getUser = async (login, password) => {
     const user = await db('users').where({ token }).first()
     return user
   }
+
+  export const getAllPolls = async () => {
+    var polls = []
+    const pollsWithoutOptions = await db("polls").select("*")
+    for(const p of pollsWithoutOptions){
+        const options = await db("options").select("*").where("poll_id", p.id)
+        p.options = options
+
+        let help = await db('users').select("login").where("id", p.author_id).first()
+        p.author = help.login
+        polls.push(p)
+        //console.log(p)
+    }
+    return polls
+}

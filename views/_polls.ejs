@@ -1,20 +1,26 @@
-<table id="poll">
-    <tr>
-        <th colspan="3">This will be a long question</th>
-    </tr>
-    <tr>
-        <td>option</td>
-        <td>count</td>
-        <td>button</td>
-    </tr>
-    <tr>
-        <td>option</td>
-        <td>count</td>
-        <td>button</td>
-    </tr>
-    <tr>
-        <td>vote button</td>
-        <td>author</td>
-        <td>maybe delete</td>
-    </tr>
-  </table>
+<% for (const poll of polls) {%>
+    <form action="/vote/<%= poll.id%>" method="get"></form>
+    <table id="poll">
+        <tr>
+            <th colspan="3"><%= poll.title%></th>
+        </tr>
+
+        <% for (const opt of poll.options) {%>
+        <tr>
+            <td><%= opt.title%></td>
+            <td><%= opt.votes_count%></td>
+            <td><input type="radio" id=<%= opt.id%> name=<%= poll.id%> value=<%= opt.id%>></td>
+        </tr>
+        <% } %>
+
+
+        <tr>
+            <td> <button name="vote" type="submit">Hlasovat</button> </td>
+            <td><%= poll.author%></td>
+            <td>maybe delete</td>
+        </tr>
+      </table>
+
+
+    <br>
+<% } %>

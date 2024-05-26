@@ -1,6 +1,6 @@
 import express from "express"
 import cookieParser from "cookie-parser";
-import {db, createUser, getUserByToken, getUser, loginAlreadyUsed } from './db.js'
+import {db, createUser, getUserByToken, getUser, loginAlreadyUsed, getAllPolls } from './db.js'
 
 export const app = express();
 
@@ -31,9 +31,11 @@ app.use(async (req, res, next) => {
 })
 
 app.get('/', auth, async (req, res) => {
+    const polls = await getAllPolls()
     res.render('index', {
       title: 'Hlasování',
       user: res.locals.user,
+      polls: polls,
     })
 })
 
@@ -84,7 +86,38 @@ app.get('/new-poll/:num', auth, async (req, res) => {
       })
 })
 
+app.post('/add-poll', auth, async (req, res) => {
+    const title = req.body.poll_title
+    const options = req.body.option
 
+    const poll = {
+        title: title,
+        author_id: res.locals.user.id,
+    }
+
+    const [poll_id] = await db("polls").insert(poll, 'id');
+
+    for(const opt of options){
+        const option = {
+            poll_id: poll_id.id,
+            title: opt,
+        }
+        await db("options").insert(option);
+    }
+
+    //TODO send to all connections
+
+    res.redirect('/')
+})
+
+// Voting
+app.post("/vote/:id", async (req, res, next) => {
+    //req.params.id - pro který poll se hlasovalo
+    // najít pro který radio button byl hlas
+    // přičíst hlas do databáze
+    // zakázat další hlasování pro tento poll
+    // přesměrovat zpět
+})
 
 // Errors =============================================
 app.get('/register-error', async (req, res) => {
