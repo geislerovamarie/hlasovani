@@ -76,9 +76,11 @@ app.get('/sign-out', auth, async (req, res) => {
 
 
 // New poll =======================================
-app.get('/new-poll', auth, async (req, res) => {
+app.get('/new-poll/:num', auth, async (req, res) => {
+    const num = req.params.num
     res.render('new-poll', {
         user: res.locals.user,
+        num: num,
       })
 })
 

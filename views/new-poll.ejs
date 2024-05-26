@@ -18,6 +18,35 @@
         <a href="/sign-out">Odhlásit</a>
       <% }%>
     <br>
+    <hr width="100%" size="2">
     <br>
+
+    <div class="container">
+        <% if (num < 30) { %>
+            <a href="/new-poll/<%= parseInt(num)+1%>">Přidat možnost</a>&nbsp;
+        <% }%>
+        &nbsp;
+        <% if (num >= 1) { %>
+            <a href="/new-poll/<%= num-1%>">Odebrat možnost</a>
+        <% }%>
+        <br><br>
+
+        <form action="" method="POST">
+        <div id="formfield">
+          <input type="text" name="poll_title" class="text" size="50" placeholder="Název hlasování nebo otázka" required><br><br>
+
+            <% for (var i=0; i<num; i++) {%>
+                <input type="text" name="option" class="text" size="50" placeholder="Možnost" required><br>
+            <% } %>          
+        </div>
+        <br>
+        <input name="submit" type="Submit" value="Sdílet">
+        </form>
+
+        
+                
+      </div>
+
+
 </body>
 </html>
