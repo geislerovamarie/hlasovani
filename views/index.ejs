@@ -35,10 +35,16 @@
 </head>
 <body>
     <h1><%= title %></h1>
-
-    <div id="newPoll">
-        <button name="addPoll" type="button">Vytvořit nové hlasování</button> 
-    </div>
+    <% if (user) { %>
+        <%= user.login %>
+        &nbsp;
+        <a href="/sign-out">Odhlásit</a>
+      <% }%>
+    <br>
+    <br>
+    <form action="/new-poll" method="get">
+        <button name="addPoll" type="submit">Vytvořit nové hlasování</button> 
+      </form>
     <br>
 
     <div id="pollsList">

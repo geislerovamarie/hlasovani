@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Přihlášení | Registrace</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hlasování</h1>
+    <h3>Registrace</h3>
+    <form action="/register" method="post">
+      login: &nbsp; <input type="text" name="login1" />
+      <br>
+      heslo: &nbsp;<input type="password" name="password1" />
+      <br><br>
+
+      <% if (errorRegister) { %>
+        Login je již obsazený, zvolte prosím jiný.
+        <br><br>
+      <% }%>
+
+      <button name="register" type="submit">Zaregistrovat se</button>
+    </form>
+    <br>
+
+    <h3>Přihlášení</h3>
+    <form action="/login" method="post">
+        login: &nbsp; <input type="text" name="login2" />
+        <br>
+        heslo: &nbsp;<input type="password" name="password2" />
+        <br><br>
+
+        <% if (errorLogin) { %>
+            Heslo nebo login není správně.
+            <br><br>
+          <% }%>
+
+
+        <button name="login" type="submit">Přihlásit se</button>
+      </form>
+</body>
+</html>
