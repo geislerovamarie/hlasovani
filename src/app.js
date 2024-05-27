@@ -1,4 +1,4 @@
-import express from "express"
+import express, { request } from "express"
 import cookieParser from "cookie-parser";
 import {db, createUser, getUserByToken, getUser, loginAlreadyUsed, getAllPolls } from './db.js'
 
@@ -117,12 +117,26 @@ app.post("/vote/:id", auth, async (req, res, next) => {
     // přičíst hlas do databáze
     // zakázat další hlasování pro tento poll
     // přesměrovat zpět
+    const pollId = req.params.id;
+    const selectedOptionId = req.body[pollId];
+    if(!selectedOptionId) return res.redirect('/')
+
+    const option = await db('options').select("*").where("id", selectedOptionId).first()
+    if (!option) return null
+    
+    await db("options").where("id", selectedOptionId).update({votes_count: parseInt(option.votes_count)+1})
+ 
+    res.redirect('/')
+
 })
 
 // Delete
 app.get("/delete/:id", auth, async (req, res, next) => {
-    //smazat z databaze a i options
-    // přesměrovat zpět
+    await db("polls").delete().where("id", "=",req.params.id);
+    await db("options").delete().where("poll_id", "=",req.params.id);
+
+    //sendTodoListToAllConnections().catch((e) => console.err(e));
+    res.redirect("/");
 })
 
 // Errors =============================================

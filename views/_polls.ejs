@@ -1,5 +1,5 @@
 <% for (const poll of polls) {%>
-    <form action="/vote/<%= poll.id%>" method="get">
+    <form action="/vote/<%= poll.id%>" method="post">
     <table id="poll">
         <tr>
             <th colspan="3"><%= poll.title%></th>
