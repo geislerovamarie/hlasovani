@@ -111,11 +111,17 @@ app.post('/add-poll', auth, async (req, res) => {
 })
 
 // Voting
-app.post("/vote/:id", async (req, res, next) => {
+app.post("/vote/:id", auth, async (req, res, next) => {
     //req.params.id - pro který poll se hlasovalo
     // najít pro který radio button byl hlas
     // přičíst hlas do databáze
     // zakázat další hlasování pro tento poll
+    // přesměrovat zpět
+})
+
+// Delete
+app.get("/delete/:id", auth, async (req, res, next) => {
+    //smazat z databaze a i options
     // přesměrovat zpět
 })
 
