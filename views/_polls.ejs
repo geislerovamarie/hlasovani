@@ -15,7 +15,12 @@
 
 
         <tr>
-            <td> <button name="vote" type="submit">Hlasovat</button> </td>
+            <td> 
+                <button name="vote" type="submit" 
+                    <% if (unavailablePolls.some(i => i.poll_id === poll.id)){ %> disabled <% }%>
+                    >Hlasovat
+                </button> 
+            </td>
             <td><%= poll.author%></td>
             <td>
                 <% if (user.id == poll.author_id) { %>

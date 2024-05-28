@@ -32,10 +32,16 @@ app.use(async (req, res, next) => {
 
 app.get('/', auth, async (req, res) => {
     const polls = await getAllPolls()
+    const unavailablePolls = await db('votes').select("poll_id").where("user_id", res.locals.user.id)
+    console.log(unavailablePolls)
+
+    //if (!unavailablePolls) return null
+
     res.render('index', {
       title: 'Hlasování',
       user: res.locals.user,
       polls: polls,
+      unavailablePolls: unavailablePolls,
     })
 })
 
@@ -115,6 +121,7 @@ app.post("/vote/:id", auth, async (req, res, next) => {
     //req.params.id - pro který poll se hlasovalo
     // najít pro který radio button byl hlas
     // přičíst hlas do databáze
+    // napsat hlas a uzivatele do db
     // zakázat další hlasování pro tento poll
     // přesměrovat zpět
     const pollId = req.params.id;
@@ -125,15 +132,21 @@ app.post("/vote/:id", auth, async (req, res, next) => {
     if (!option) return null
     
     await db("options").where("id", selectedOptionId).update({votes_count: parseInt(option.votes_count)+1})
+
+    const vote = {
+        user_id: res.locals.user.id,
+        poll_id: pollId,
+    }
+    await db("votes").insert(vote);
  
     res.redirect('/')
-
 })
 
 // Delete
 app.get("/delete/:id", auth, async (req, res, next) => {
     await db("polls").delete().where("id", "=",req.params.id);
     await db("options").delete().where("poll_id", "=",req.params.id);
+    await db("votes").delete().where("poll_id", "=",req.params.id);
 
     //sendTodoListToAllConnections().catch((e) => console.err(e));
     res.redirect("/");
