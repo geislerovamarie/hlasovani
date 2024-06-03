@@ -1,6 +1,6 @@
 import { WebSocketServer } from "ws";
 import ejs from "ejs";
-import { db, getAllPolls } from "./db.js";
+import { db, getAllPolls, getUnavailablePolls } from "./db.js";
 
 const connections = new Set();
 
@@ -21,9 +21,7 @@ export const createWebSocketServer = (server) => {
 export const sendPollsToAllConnections = async (user) => {
   if (!user) return;
   const polls = await getAllPolls();
-  const unavailablePolls = await db("votes")
-    .select("poll_id")
-    .where("user_id", user.id);
+  const unavailablePolls = await getUnavailablePolls(user.id);
 
   const pollsList = await ejs.renderFile("views/_polls.ejs", {
     user: user,
@@ -39,7 +37,6 @@ export const sendPollsToAllConnections = async (user) => {
       })
     );
   }
-  console.log("1 send message ");
 };
 
 /* export const changeInUser = async () => {

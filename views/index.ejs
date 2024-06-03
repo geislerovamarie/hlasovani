@@ -51,21 +51,19 @@
     <div id="pollsList"><%- include("_polls") %></div>
 
     <script>
-      const ws = new WebSocket("ws://localhost:3000")
-
+      const ws = new WebSocket("ws://localhost:3000");
+      console.log();
       ws.addEventListener("message", (ev) => {
-        const data = JSON.parse(ev.data)
-        console.log("2 message received")
+        const data = JSON.parse(ev.data);
 
         if (data.type === "pollsList") {
-          const el = document.getElementById("pollsList")
-          el.innerHTML = data.html
-          console.log("3 message is pollslist")
-        } else if (data.type === "changeInUser") {
-          console.log("3 message is changeinuser")
-          document.location.href = "/"
+          const el = document.getElementById("pollsList");
+          console.log("el1: ", el);
+          el.innerHTML = data.html;
+
+          console.log("el2: ", el);
         }
-      })
+      });
     </script>
   </body>
 </html>
