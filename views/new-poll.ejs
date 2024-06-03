@@ -47,6 +47,18 @@
                 
       </div>
 
+      <script>
+        ws.addEventListener("message", (ev) => {
+            const data = JSON.parse(ev.data)
+            console.log("2 message received")
+
+            if(data.type === "changeInUser"){
+                console.log("3 message is changeinuser")
+                document.location.href = "/";
+            }
+        })
+      </script>
+
 
 </body>
 </html>
