@@ -24,7 +24,7 @@ export const sendPollsToAllConnections = async (user) => {
   const unavailablePolls = await getUnavailablePolls(user.id);
 
   const pollsList = await ejs.renderFile("views/_polls.ejs", {
-    user: user,
+    sender: user,
     polls: polls,
     unavailablePolls: unavailablePolls,
   });
