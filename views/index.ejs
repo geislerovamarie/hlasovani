@@ -9,19 +9,19 @@
         font-family: Arial, Helvetica, sans-serif;
       }
 
-      #poll {
+      .poll {
         border-collapse: collapse;
         max-width: 100%;
         white-space: nowrap;
       }
 
-      #poll td,
-      #poll th {
+      .poll td,
+      .poll th {
         border: 1px solid #f2f2f2;
         padding: 8px;
       }
 
-      #poll th {
+      .poll th {
         padding-top: 12px;
         padding-bottom: 12px;
         text-align: left;
@@ -38,6 +38,7 @@
     <h1><%= title %></h1>
     <% if (user) { %> <%= user.login %> &nbsp;
     <a href="/sign-out">Odhlásit</a>
+    <div id="userIdStorage" userId="<%= user.id %>"></div>
     <% }%>
     <br />
     <hr width="100%" size="2" />
@@ -48,20 +49,41 @@
     </form>
     <br />
 
-    <div id="pollsList"><%- include("_polls") %></div>
+    <div id="pollsList">
+      <%- include("_polls", { userId: user ? user.id : null }) %>
+    </div>
 
     <script>
       const ws = new WebSocket("ws://localhost:3000");
-      console.log();
+      const userId = document.getElementById("userIdStorage").getAttribute("userId"); //maybe move into event listener
+
       ws.addEventListener("message", (ev) => {
+        
+        //console.log(userId);
+
         const data = JSON.parse(ev.data);
 
         if (data.type === "pollsList") {
           const el = document.getElementById("pollsList");
-          console.log("el1: ", el);
           el.innerHTML = data.html;
 
-          console.log("el2: ", el);
+          // get numPolls
+          const numPolls = data.numPolls;
+          console.log("Number of Polls: ", numPolls);
+
+          // handle delete link
+          for(let i = 0; i<numPolls; i++){
+            const authorId = document.getElementById("pollAuthor_" + i).getAttribute("pollAuthorId")
+            console.log("user: ", userId, " | author: " + authorId)
+
+            if(userId !== authorId){
+              console.log("different");
+              document.getElementById("deleteLink_" + i).style.display='none'
+            }else{
+              console.log("same");
+              document.getElementById("deleteLink_"+i).style.display='inline'
+            }
+          }
         }
       });
     </script>

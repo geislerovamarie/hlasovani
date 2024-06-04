@@ -1,33 +1,37 @@
-<% for (const poll of polls) {%>
-    <form action="/vote/<%= poll.id%>" method="post">
-    <table id="poll">
-        <tr>
-            <th colspan="3"><%= poll.title%></th>
-        </tr>
+<% let i = 0; %>
+<% for (const poll of polls) { %>
+<form action="/vote/<%= poll.id%>" method="post">
+  <table class="poll" id="poll_<%= poll.id%>">
+    <tr>
+      <th colspan="3"><%= poll.title%></th>
+    </tr>
 
-        <% for (const opt of poll.options) {%>
-        <tr>
-            <td><%= opt.title%></td>
-            <td><%= opt.votes_count%></td>
-            <td><input type="radio" id=<%= opt.id%> name=<%= poll.id%> value=<%= opt.id%>></td>
-        </tr>
-        <% } %>
+    <% for (const opt of poll.options) {%>
+    <tr>
+      <td><%= opt.title%></td>
+      <td><%= opt.votes_count%></td>
+      <td><input type="radio" id="<%= opt.id%>" name="<%= poll.id%>" value="<%= opt.id%>""></td>
+    </tr>
+    <% } %>
 
-        <tr>
-            <td> 
-                <button name="vote" type="submit" 
-                    <% if (unavailablePolls.some(i => i.poll_id === poll.id)){ %> disabled <% }%> >
-                    Hlasovat
-                </button> 
-            </td>
-            <td><%= poll.author%></td>
-            <td>
-                <% if (user.id == poll.author_id) { %>
-                    <a href="/delete/<%= poll.id%>">Smazat</a>
-                  <% }%> 
-            </td>
-        </tr>
-      </table>
-    </form>
-    <br>
-<% } %>
+    <tr>
+      <td>
+        <button name="vote" type="submit">Hlasovat</button>
+      </td>
+      <td><div id="pollAuthor_<%= i%>" pollAuthorId="<%= poll.author_id%>"><%= poll.author%></td></div>
+      <td>
+        <% if (typeof userId != "undefined") { %>
+          <% if (userId && userId == poll.author_id) { %>
+          <a href="/delete/<%= poll.id%>">Smazat</a>
+          <% }%>
+        <% } else { %>
+        <div id="deleteLink_<%= i%>">
+          <a href="/delete/<%= poll.id%>">Smazat</a>
+        <% }%>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>
+<br />
+<% i++;} %>
