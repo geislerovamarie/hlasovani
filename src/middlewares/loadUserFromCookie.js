@@ -1,12 +1,12 @@
-import { getUserByToken } from "../db.js";
+import { getUserByToken } from "../db.js"
 
 export const loadUserFromCookie = async (req, res, next) => {
-  const token = req.cookies.token;
+  const token = req.cookies.token
 
   if (token) {
-    res.locals.user = await getUserByToken(token);
+    res.locals.user = await getUserByToken(token)
   } else {
-    res.locals.user = null;
+    res.locals.user = null
   }
-  next();
-};
+  next()
+}

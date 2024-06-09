@@ -1,6 +1,6 @@
 import { WebSocketServer } from "ws"
 import ejs from "ejs"
-import { db, getAllPolls } from "./db.js"
+import { getAllPolls } from "./db.js"
 
 const connections = new Set()
 
@@ -21,10 +21,6 @@ export const createWebSocketServer = (server) => {
 export const sendPollsToAllConnections = async () => {
   const polls = await getAllPolls()
   const numPolls = polls.length
-
-  console.log("src/websockets.js send polls to all connections")
-  console.log(polls)
-  for (let i = 0; i < polls.length; i++) console.log(polls[i].options)
 
   const pollsList = await ejs.renderFile("views/_polls.ejs", {
     polls: polls,
