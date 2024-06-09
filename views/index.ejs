@@ -74,14 +74,12 @@
           // handle delete link
           for(let i = 0; i<numPolls; i++){
             const authorId = document.getElementById("pollAuthor_" + i).getAttribute("pollAuthorId")
-            console.log("user: ", userId, " | author: " + authorId)
+            //console.log("user: ", userId, " | author: " + authorId)
 
             if(userId !== authorId){
-              console.log("different");
               document.getElementById("deleteLink_" + i).style.display='none'
             }else{
-              console.log("same");
-              document.getElementById("deleteLink_"+i).style.display='inline'
+              document.getElementById("deleteLink_" + i).style.display='inline'
             }
           }
         }

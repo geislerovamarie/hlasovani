@@ -3,12 +3,13 @@ import cookieParser from "cookie-parser"
 import {
   db,
   createUser,
-  getUserByToken,
   getUser,
   loginAlreadyUsed,
   getAllPolls,
 } from "./db.js"
 import { sendPollsToAllConnections } from "./websockets.js"
+import { auth } from "./middlewares/auth.js"
+import { loadUserFromCookie } from "./middlewares/loadUserFromCookie.js"
 
 export const app = express()
 
@@ -17,27 +18,9 @@ app.set("view engine", "ejs")
 app.use(express.static("public"))
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
+app.use(loadUserFromCookie)
 
-const auth = (req, res, next) => {
-  if (res.locals.user) {
-    next()
-  } else {
-    res.redirect("/register")
-  }
-}
-
-// load user from cookie, can be moved to a different file later
-app.use(async (req, res, next) => {
-  const token = req.cookies.token
-
-  if (token) {
-    res.locals.user = await getUserByToken(token)
-  } else {
-    res.locals.user = null
-  }
-  next()
-})
-
+// home
 app.get("/", auth, async (req, res) => {
   const polls = await getAllPolls()
 
@@ -48,7 +31,7 @@ app.get("/", auth, async (req, res) => {
   })
 })
 
-// Registration and login ==================================
+// Registration and login - move all to user route==================================
 app.get("/register", async (req, res) => {
   res.render("register", {
     errorRegister: false,
@@ -84,11 +67,11 @@ app.post("/login", async (req, res) => {
 
 app.get("/sign-out", auth, async (req, res) => {
   res.clearCookie("token")
-  sendPollsToAllConnections(res.locals.user).catch((e) => console.error(e))
   res.redirect("/register")
 })
 
-// New poll =======================================
+//Polls - add into new router file =======================================
+// New poll 
 app.get("/new-poll/:num", auth, async (req, res) => {
   const num = req.params.num
   res.render("new-poll", {
@@ -97,6 +80,7 @@ app.get("/new-poll/:num", auth, async (req, res) => {
   })
 })
 
+// tohle predelat - rozdelit a presunout?
 app.post("/add-poll", auth, async (req, res) => {
   const title = req.body.poll_title
   const options = Array.isArray(req.body.option) ? req.body.option : [req.body.option]
@@ -121,16 +105,18 @@ app.post("/add-poll", auth, async (req, res) => {
 })
 
 // Voting
-app.post("/vote/:id", auth, async (req, res, next) => {
+app.post("/vote/:id", auth, async (req, res, next) => { // delete next?
   const pollId = req.params.id
   const selectedOptionId = req.body[pollId]
   if (!selectedOptionId) return res.redirect("/")
 
+
+// tadyto dat do db
   const option = await db("options")
     .select("*")
     .where("id", selectedOptionId)
     .first()
-  if (!option) return null
+  if (!option) return null // this might be wrong, handle better? but it might be unnecessary
 
   await db("options")
     .where("id", selectedOptionId)
@@ -141,7 +127,8 @@ app.post("/vote/:id", auth, async (req, res, next) => {
 })
 
 // Delete
-app.get("/delete/:id", auth, async (req, res, next) => {
+// taky fce do db
+app.get("/delete/:id", auth, async (req, res) => {
   await db("polls").delete().where("id", "=", req.params.id)
   await db("options").delete().where("poll_id", "=", req.params.id)
 
@@ -169,7 +156,7 @@ app.use((req, res) => {
   res.send("404 - Stránka nenalezena")
 })
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error(err)
   res.status(500)
   res.send("500 - Chyba na straně serveru")
