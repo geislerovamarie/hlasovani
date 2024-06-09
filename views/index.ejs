@@ -55,10 +55,11 @@
 
     <script>
       const ws = new WebSocket("ws://localhost:3000");
-      const userId = document.getElementById("userIdStorage").getAttribute("userId"); //maybe move into event listener
+      const userId = document
+        .getElementById("userIdStorage")
+        .getAttribute("userId"); //maybe move into event listener
 
       ws.addEventListener("message", (ev) => {
-        
         const data = JSON.parse(ev.data);
 
         if (data.type === "pollsList") {
@@ -68,13 +69,16 @@
           const numPolls = data.numPolls;
 
           // handle delete link visibility
-          for(let i = 0; i < numPolls; i++){
-            const authorId = document.getElementById("pollAuthor_" + i).getAttribute("pollAuthorId")
+          for (let i = 0; i < numPolls; i++) {
+            const authorId = document
+              .getElementById("pollAuthor_" + i)
+              .getAttribute("pollAuthorId");
 
-            if(userId !== authorId){
-              document.getElementById("deleteLink_" + i).style.display='none'
-            }else{
-              document.getElementById("deleteLink_" + i).style.display='inline'
+            if (userId !== authorId) {
+              document.getElementById("deleteLink_" + i).style.display = "none";
+            } else {
+              document.getElementById("deleteLink_" + i).style.display =
+                "inline";
             }
           }
         }
