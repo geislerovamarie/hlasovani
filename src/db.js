@@ -42,6 +42,25 @@ export const getUserByToken = async (token) => {
   return user
 }
 
+export const insertPoll = async (title, userId, options) => {
+  const poll = {
+    title: title,
+    author_id: userId,
+  }
+
+  const [poll_id] = await db("polls").insert(poll, "id")
+
+  for (const opt of options) {
+    if(!opt) continue;
+
+    const option = {
+      poll_id: poll_id.id,
+      title: opt,
+    }
+    await db("options").insert(option)
+  }
+}
+
 export const getAllPolls = async () => {
   var polls = []
   const pollsWithoutOptions = await db("polls").select("*")
@@ -57,4 +76,22 @@ export const getAllPolls = async () => {
     polls.push(p)
   }
   return polls
+}
+
+export const addVote = async (selectedOptionId) => {
+  const option = await db("options")
+    .select("*")
+    .where("id", selectedOptionId)
+    .first()
+  //if (!option) return null // this might be wrong, handle better? but it might be unnecessary
+
+  await db("options")
+    .where("id", selectedOptionId)
+    .update({ votes_count: parseInt(option.votes_count) + 1 })
+
+}
+
+export const deletePoll = async (id) => {
+  await db("polls").delete().where("id", "=", id)
+  await db("options").delete().where("poll_id", "=", id)
 }

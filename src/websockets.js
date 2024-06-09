@@ -18,13 +18,11 @@ export const createWebSocketServer = (server) => {
   })
 }
 
-export const sendPollsToAllConnections = async (user) => {
-  if (!user) return
+export const sendPollsToAllConnections = async () => {
   const polls = await getAllPolls()
   const numPolls = polls.length
 
   const pollsList = await ejs.renderFile("views/_polls.ejs", {
-    sender: user,
     polls: polls,
   })
 

@@ -59,22 +59,17 @@
 
       ws.addEventListener("message", (ev) => {
         
-        //console.log(userId);
-
         const data = JSON.parse(ev.data);
 
         if (data.type === "pollsList") {
           const el = document.getElementById("pollsList");
           el.innerHTML = data.html;
 
-          // get numPolls
           const numPolls = data.numPolls;
-          console.log("Number of Polls: ", numPolls);
 
-          // handle delete link
-          for(let i = 0; i<numPolls; i++){
+          // handle delete link visibility
+          for(let i = 0; i < numPolls; i++){
             const authorId = document.getElementById("pollAuthor_" + i).getAttribute("pollAuthorId")
-            //console.log("user: ", userId, " | author: " + authorId)
 
             if(userId !== authorId){
               document.getElementById("deleteLink_" + i).style.display='none'
