@@ -50,6 +50,9 @@ export const insertPoll = async (title, userId, options) => {
 
   const [poll_id] = await db("polls").insert(poll, "id")
 
+  //console.log("src/db.js [insert poll] options berofre for cycle:")
+  //console.log(options)
+
   for (const opt of options) {
     if(!opt) continue;
 
@@ -58,12 +61,16 @@ export const insertPoll = async (title, userId, options) => {
       title: opt,
     }
     await db("options").insert(option)
+    //console.log(option)
   }
+
+  
 }
 
 export const getAllPolls = async () => {
   var polls = []
   const pollsWithoutOptions = await db("polls").select("*")
+
   for (const p of pollsWithoutOptions) {
     const options = await db("options").select("*").where("poll_id", p.id)
     p.options = options
@@ -72,9 +79,14 @@ export const getAllPolls = async () => {
       .select("login")
       .where("id", p.author_id)
       .first()
+
     p.author = help.login
     polls.push(p)
   }
+
+  console.log("src/db.js getAllPolls")
+  console.log(polls)
+  for(let i=0; i < polls.length; i++) console.log(polls[i].options)
   return polls
 }
 

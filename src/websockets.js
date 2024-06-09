@@ -22,9 +22,15 @@ export const sendPollsToAllConnections = async () => {
   const polls = await getAllPolls()
   const numPolls = polls.length
 
+  console.log("src/websockets.js send polls to all connections")
+  console.log(polls)
+  for(let i=0; i < polls.length; i++) console.log(polls[i].options)
+  
+
   const pollsList = await ejs.renderFile("views/_polls.ejs", {
     polls: polls,
   })
+
 
   for (const connection of connections) {
     connection.send(
