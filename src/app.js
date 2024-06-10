@@ -1,4 +1,4 @@
-import express, { request } from "express"
+import express from "express"
 import cookieParser from "cookie-parser"
 import { getAllPolls } from "./db.js"
 import { auth } from "./middlewares/auth.js"

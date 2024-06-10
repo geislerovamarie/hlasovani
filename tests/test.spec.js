@@ -40,9 +40,8 @@ test.serial(
 )
 
 test.serial("4) Logged user sees the home page", async (t) => {
-  let agent = supertest.agent(app)
-
-  await agent
+  await supertest
+    .agent(app)
     .post("/register")
     .type("form")
     .send({ login1: "testUser", password1: "12345" })

@@ -57,7 +57,7 @@
       const ws = new WebSocket("ws://localhost:3000");
       const userId = document
         .getElementById("userIdStorage")
-        .getAttribute("userId"); //maybe move into event listener
+        .getAttribute("userId");
 
       ws.addEventListener("message", (ev) => {
         const data = JSON.parse(ev.data);

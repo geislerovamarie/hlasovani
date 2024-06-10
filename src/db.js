@@ -4,6 +4,7 @@ import knexfile from "../knexfile.js"
 
 export const db = knex(knexfile[process.env.NODE_ENV || "development"])
 
+// Users - -----------------------------------------------
 export const createUser = async (login, password) => {
   const salt = crypto.randomBytes(16).toString("hex")
   const hash = crypto
@@ -42,6 +43,7 @@ export const getUserByToken = async (token) => {
   return user
 }
 
+// Polls ----------------------------------------------------
 export const insertPoll = async (title, userId, options) => {
   const poll = {
     title: title,
