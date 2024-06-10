@@ -40,13 +40,12 @@ test.serial(
 )
 
 test.serial("4) Logged user sees the home page", async (t) => {
-  await supertest
+  const response = await supertest
     .agent(app)
     .post("/register")
     .type("form")
     .send({ login1: "testUser", password1: "12345" })
-
-  const response = await agent.get("/").redirects(1)
+    .redirects(1)
 
   t.assert(response.text.includes("Hlasování"))
   t.assert(response.text.includes("testUser"))
